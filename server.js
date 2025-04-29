@@ -9,20 +9,17 @@ app.use(
         cookie: { secure: false },
     })
 );
+app.set("view engine", "ejs");
+
 const PORT = 3000;
 
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
-app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
     res.redirect("/home");
-});
-
-app.get("/home", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
 });
 
 app.get("/login", (req, res) => {
@@ -43,8 +40,20 @@ app.post("/login", (req, res) => {
         (user) => user.username === username && user.password === password
     );
     if (user) {
+        req.session.user = user;
         res.render("home.ejs", { username: user.username });
     } else {
         res.status(401).send("Invalid credentials");
     }
+});
+const isAuthenticated = (req, res, next) => {
+    if (req.session && req.session.user) {
+        return next();
+    } else {
+        res.redirect("/login");
+    }
+};
+app.use(isAuthenticated);
+app.get("home", (req, res) => {
+    res.render("home.ejs", { username: req.session.user.username });
 });
