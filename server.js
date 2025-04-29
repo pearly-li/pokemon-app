@@ -33,8 +33,10 @@ app.post("/login", (req, res) => {
         (user) => user.username === username && user.password === password
     );
     if (user) {
-        res.send(`Welcome ${username}`);
+        res.redirect("/home");
     } else {
         res.status(401).send("Invalid credentials");
     }
 });
+
+app.set("view engine", "ejs");
