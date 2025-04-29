@@ -6,6 +6,7 @@ const PORT = 3000;
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
 });
+app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
     res.redirect("/home");
@@ -33,10 +34,8 @@ app.post("/login", (req, res) => {
         (user) => user.username === username && user.password === password
     );
     if (user) {
-        res.redirect("/home");
+        res.render("home.ejs", { username: user.username });
     } else {
         res.status(401).send("Invalid credentials");
     }
 });
-
-app.set("view engine", "ejs");
