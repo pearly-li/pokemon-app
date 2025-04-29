@@ -1,5 +1,14 @@
 const express = require("express");
+var session = require("express-session");
 const app = express();
+app.use(
+    session({
+        secret: "keyboard cat",
+        resave: false,
+        saveUninitialized: true,
+        cookie: { secure: false },
+    })
+);
 const PORT = 3000;
 
 /* app.METHOD(path, callback [, callback ...]) */
