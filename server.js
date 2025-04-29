@@ -15,8 +15,8 @@ app.get("/home", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
-app.get("/", (req, res) => {
-    app.get("/login,html");
+app.get("/login", (req, res) => {
+    res.sendFile(__dirname + "/login.html");
 });
 
 const usersArray = [
