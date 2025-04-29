@@ -26,3 +26,15 @@ const usersArray = [
     { username: "user2", password: "password2" },
     { username: "user3", password: "password3" },
 ];
+app.use(express.urlencoded({ extended: true }));
+app.post("/login", (req, res) => {
+    const { username, password } = req.body;
+    const user = usersArray.find(
+        (user) => user.username === username && user.password === password
+    );
+    if (user) {
+        res.send(`Welcome ${username}`);
+    } else {
+        res.status(401).send("Invalid credentials");
+    }
+});
