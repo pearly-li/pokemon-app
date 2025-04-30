@@ -54,6 +54,6 @@ const isAuthenticated = (req, res, next) => {
     }
 };
 app.use(isAuthenticated);
-app.get("home", (req, res) => {
+app.get("/home", (req, res) => {
     res.render("home.ejs", { username: req.session.user.username });
 });
