@@ -17,34 +17,50 @@
         <ul id="favourites-list"></ul>
 
         <script>
-            const fetchFavourites = (arg) => {
-                fetch(`/favourites`
-                ).then(response => response.json())
+            const fetchFavourites = () => {
+                fetch(`/favourites`)
+                    .then(response => response.json())
                     .then(data => {
-                        const favouritesList = document.getElementByID("favourites-list");
-                        favouritesList.innerHTML = ""; // Clear the list before adding new items
+                        const favouritesList = document.getElementById("favourites-list");
+                        favouritesList.innerHTML = ""; // Clear list before adding
                         data.forEach((favourite) => {
-                            const favouritesListItem = document.createElement("favouritesListItem")
+                            const favouritesListItem = document.createElement("li");
                             favouritesListItem.innerText = favourite.name;
                             favouritesList.appendChild(favouritesListItem);
-
-                        })
+                        });
                     })
-                    .catch((error) => console.error("Error fetcgubg favourites:", error));
+                    .catch((error) => console.error("Error fetching favourites:", error));
             }
+
+            fetchFavourites();
+
             fetch("https://pokeapi.co/api/v2/pokemon?limit=10")
                 .then((response) => response.json())
                 .then((data) => {
                     const pokemonList = document.getElementById("pokemon-list");
                     data.results.forEach((pokemon) => {
-                        const pokemonListItem = document.createElement("pokemonListItem");
+                        const pokemonListItem = document.createElement("li");
                         pokemonListItem.innerText = pokemon.name;
+
+                        pokemonListItem.addEventListener("click", () => {
+                            fetch(`/addFavourite/${pokemon.name}`)
+                                .then(data => {
+                                    if (data.ok) {
+                                        alert(`${pokemon.name} added to favourites.`);
+                                        fetchFavourites();
+                                    } else {
+                                        alert(`Failed to add ${pokemon.name} to favourites.`);
+                                    }
+                                })
+                                .catch(error => console.error("Error adding favourite:", error));
+                        });
+
                         pokemonList.appendChild(pokemonListItem);
-                    })
+                    });
                 })
                 .catch((error) => console.error("Error fetching Pokemon:", error));
-
         </script>
+
 
 
 </body>
