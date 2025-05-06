@@ -24,29 +24,28 @@
                         const favouritesList = document.getElementByID("favourites-list");
                         favouritesList.innerHTML = ""; // Clear the list before adding new items
                         data.forEach((favourite) => {
-                            const li = document.createElement("li")
-                            li.innerText = favourite.name;
-                            favouritesList.appendChild(li);
+                            const favouritesListItem = document.createElement("favouritesListItem")
+                            favouritesListItem.innerText = favourite.name;
+                            favouritesList.appendChild(favouritesListItem);
 
                         })
                     })
                     .catch((error) => console.error("Error fetcgubg favourites:", error));
             }
-        </script>
-        <script>
             fetch("https://pokeapi.co/api/v2/pokemon?limit=10")
                 .then((response) => response.json())
                 .then((data) => {
                     const pokemonList = document.getElementById("pokemon-list");
                     data.results.forEach((pokemon) => {
-                        const li = document.createElement("li");
-                        li.innerText = pokemon.name;
-                        pokemonList.appendChild(li);
-
+                        const pokemonListItem = document.createElement("pokemonListItem");
+                        pokemonListItem.innerText = pokemon.name;
+                        pokemonList.appendChild(pokemonListItem);
                     })
                 })
                 .catch((error) => console.error("Error fetching Pokemon:", error));
+
         </script>
+
 
 </body>
 
