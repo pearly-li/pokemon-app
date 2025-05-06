@@ -4,7 +4,7 @@ const session = require("express-session");
 const PORT = 3000;
 const mongoose = require("mongoose");
 
-app.set("view engine", ejs);
+app.set("view engine", "ejs");
 
 app.use(
     session({
@@ -76,4 +76,15 @@ app.use(isAuthenticated);
 app.get("/home", (req, res) => {
     // console.log(req.session.user);
     res.render("home.ejs", { username: req.session.user.username });
+});
+
+app.get("/favourites", async (req, res) => {
+    try {
+        const favouritesFound = await favouritesModel.find({
+            username: req.session.user.username,
+        });
+        res.json(favouritesFound);
+    } catch (error) {
+        console.log("Database error", error);
+    }
 });
