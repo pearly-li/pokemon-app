@@ -15,9 +15,18 @@ app.use(
     })
 );
 
+main().catch((err) => console.log(err));
+
 async function main() {
     await mongoose.connect("mongodb://127.0.0.1:27017/test");
 }
+
+const favouritesSchema = new mongoose.Schema({
+    name: String,
+    username: String,
+});
+
+const favouritesModel = mongoose.model("favourites", favouritesSchema);
 
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
