@@ -1,6 +1,11 @@
 const express = require("express");
-var session = require("express-session");
 const app = express();
+const session = require("express-session");
+const PORT = 3000;
+const mongoose = require("mongoose");
+
+app.set("view engine", ejs);
+
 app.use(
     session({
         secret: "keyboard cat",
@@ -9,9 +14,10 @@ app.use(
         cookie: { secure: false },
     })
 );
-app.set("view engine", "ejs");
 
-const PORT = 3000;
+async function main() {
+    await mongoose.connect("mongodb://127.0.0.1:27017/test");
+}
 
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
@@ -22,10 +28,6 @@ app.get("/", (req, res) => {
     res.redirect("/home");
 });
 
-app.get("/login", (req, res) => {
-    res.sendFile(__dirname + "/login.html");
-});
-
 const usersArray = [
     { username: "admin1", password: "admin1" },
     { username: "admin2", password: "admin2" },
@@ -33,19 +35,26 @@ const usersArray = [
     { username: "user2", password: "password2" },
     { username: "user3", password: "password3" },
 ];
+
+app.get("/login", (req, res) => {
+    res.sendFile(__dirname + "/login.html");
+});
+
 app.use(express.urlencoded({ extended: true }));
 app.post("/login", (req, res) => {
     const { username, password } = req.body;
-    const user = usersArray.find(
+    const userFound = usersArray.find(
         (user) => user.username === username && user.password === password
     );
-    if (user) {
-        req.session.user = user;
-        res.render("home.ejs", { username: user.username });
+    if (userFound) {
+        req.session.user = userFound;
+        res.redirect("/home");
+        // res.render("home.ejs", { username: req.session.user.username });
     } else {
         res.status(401).send("Invalid credentials");
     }
 });
+
 const isAuthenticated = (req, res, next) => {
     if (req.session && req.session.user) {
         return next();
@@ -53,7 +62,9 @@ const isAuthenticated = (req, res, next) => {
         res.redirect("/login");
     }
 };
+
 app.use(isAuthenticated);
 app.get("/home", (req, res) => {
+    // console.log(req.session.user);
     res.render("home.ejs", { username: req.session.user.username });
 });
