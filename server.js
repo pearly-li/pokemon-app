@@ -92,11 +92,19 @@ app.get("/favourites", async (req, res) => {
 // : is dynamic route parameter signifier in ExpressJS
 app.get("/addFavourite/:favourite", async (req, res) => {
     try {
-        const favouritesAdd = await favouritesModel.create({
+        const alreadyExists = await favouritesModel.findOne({
             name: req.params.favourite,
             username: req.session.user.username,
         });
-        res.json(favouritesAdd);
+        if (!alreadyExists) {
+            const favouritesAdd = await favouritesModel.create({
+                name: req.params.favourite,
+                username: req.session.user.username,
+            });
+            res.json(favouritesAdd);
+        } else {
+            return res.status(409).json({ message: "Already in favourites" });
+        }
     } catch (error) {
         console.log("Database error", error);
     }
