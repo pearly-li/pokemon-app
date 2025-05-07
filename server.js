@@ -35,7 +35,7 @@ const timelineSchema = new mongoose.Schema({
 
 const favouritesModel = mongoose.model("favourites", favouritesSchema);
 
-const timelineModel = mongoose.model("timelineItems", timelineSchema);
+const timelineModel = mongoose.model("timelineEvents", timelineSchema);
 
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
