@@ -43,23 +43,27 @@
                         return await fetchedData.json();
                     }
                 } catch (err) { console.error(`Error fetching from ${path}:`, err) }
-            }
+            };
 
+            const fetchFavourites = async () => {
+                const favourites = await fetchData("/favourites");
+                clearListAndAppend("favourites-list", favourites, favouritePokemon => favouritePokemon.name);
+            };
 
-            const fetchFavourites = () => {
-                fetch(`/ favourites`, { method: "GET" })
-                    .then(response => response.json())
-                    .then(data => {
-                        const favouritesList = document.getElementById("favourites-list");
-                        favouritesList.innerHTML = ""; // Clear list before adding
-                        data.forEach((favourite) => {
-                            const favouritesListItem = document.createElement("li");
-                            favouritesListItem.innerText = favourite.name;
-                            favouritesList.appendChild(favouritesListItem);
-                        });
-                    })
-                    .catch((error) => console.error("Error fetching favourites:", error));
-            }
+            // const fetchFavourites = () => {
+            //     fetch(`/ favourites`, { method: "GET" })
+            //         .then(response => response.json())
+            //         .then(data => {
+            //             const favouritesList = document.getElementById("favourites-list");
+            //             favouritesList.innerHTML = ""; // Clear list before adding
+            //             data.forEach((favourite) => {
+            //                 const favouritesListItem = document.createElement("li");
+            //                 favouritesListItem.innerText = favourite.name;
+            //                 favouritesList.appendChild(favouritesListItem);
+            //             });
+            //         })
+            //         .catch((error) => console.error("Error fetching favourites:", error));
+            // }
             fetchFavourites();
 
             const fetchTimeline = () => {
