@@ -26,7 +26,16 @@ const favouritesSchema = new mongoose.Schema({
     username: String,
 });
 
+const timelineSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    date: Date,
+    username: String,
+});
+
 const favouritesModel = mongoose.model("favourites", favouritesSchema);
+
+const timelineModel = mongoose.model("timelineItems", timelineSchema);
 
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
