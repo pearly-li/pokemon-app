@@ -36,6 +36,11 @@ const timelineSchema = new mongoose.Schema({
 const userSchema = new mongoose.Schema({
     username: String,
     password: String,
+    role: {
+        type: String,
+        enum: ["admin", "user"],
+        default: "user",
+    },
 });
 
 const favouritesModel = mongoose.model("favourites", favouritesSchema);
