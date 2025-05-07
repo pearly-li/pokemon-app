@@ -42,6 +42,8 @@ const favouritesModel = mongoose.model("favourites", favouritesSchema);
 
 const timelineModel = mongoose.model("timelineEvents", timelineSchema);
 
+const userModel = mongoose.model("userModel", userSchema);
+
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
