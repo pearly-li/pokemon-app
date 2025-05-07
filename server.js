@@ -33,6 +33,11 @@ const timelineSchema = new mongoose.Schema({
     username: String,
 });
 
+const userSchema = new mongoose.Schema({
+    username: String,
+    password: String,
+});
+
 const favouritesModel = mongoose.model("favourites", favouritesSchema);
 
 const timelineModel = mongoose.model("timelineEvents", timelineSchema);
