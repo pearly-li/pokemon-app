@@ -36,7 +36,7 @@
 
             const fetchData = async (path) => {
                 try {
-                    const fetchedData = await fetch(`/${path}`, { method: "GET" })
+                    const fetchedData = await fetch(path, { method: "GET" })
                     if (!fetchedData.ok) {
                         console.error(`Couldn't fetch data from ${url}, error: ${res.status}`)
                     } else {
@@ -51,8 +51,8 @@
             };
 
             const fetchTimeline = async () => {
-                const timeline = await fetchData("/timeline");
-                clearListAndAppend("timeline-list", timelineEvents, timelineEvent => `${timelineItem.title}: ${timelineItem.description} — ${new Date(timelineItem.date).toLocaleString()}`
+                const timelineEvents = await fetchData("/timeline");
+                clearListAndAppend("timeline-list", timelineEvents, timelineEvent => `${timelineEvent.title}: ${timelineEvent.description} — ${new Date(timelineEvent.date).toLocaleString()}`
                 );
             };
             // const fetchFavourites = () => {
@@ -88,32 +88,54 @@
             // }
             fetchTimeline();
 
-            fetch("https://pokeapi.co/api/v2/pokemon?limit=10")
-                .then((response) => response.json())
-                .then((data) => {
-                    const pokemonList = document.getElementById("pokemon-list");
-                    data.results.forEach((pokemon) => {
-                        const pokemonListItem = document.createElement("li");
-                        pokemonListItem.innerText = pokemon.name;
-
-                        pokemonListItem.addEventListener("click", () => {
-                            fetch(`/ addFavourite / ${pokemon.name}`)
-                                .then(data => {
-                                    if (data.ok) {
-                                        alert(`${pokemon.name} added to favourites.`);
-                                        fetchFavourites();
-                                        fetchTimeline();
-                                    } else {
-                                        alert(`Failed to add ${pokemon.name} to favourites.`);
-                                    }
-                                })
-                                .catch(error => console.error("Error adding favourite:", error));
-                        });
-
-                        pokemonList.appendChild(pokemonListItem);
+            const fetchPokemon = async () => {
+                const pokemonData = await fetchData("https://pokeapi.co/api/v2/pokemon?limit=10");
+                const pokemonList = document.getElementById("pokemon-list");
+                pokemonData.results.forEach(pokemon => {
+                    const pokemonListItem = createListItem(pokemon.name);
+                    pokemonListItem.addEventListener("click", async () => {
+                        try {
+                            const pokemonAdded = await fetch(`/addFavourite/${pokemon.name}`);
+                            if (pokemonAdded.ok) {
+                                alert(`${pokemon.name} added to favourites.`);
+                                fetchFavourites();
+                                fetchTimeline();
+                            } else {
+                                alert(`Failed to add ${pokemon.name} to favourites.`);
+                            }
+                        } catch (error) { console.error("Error adding favourite:", error) };
                     });
-                })
-                .catch((error) => console.error("Error fetching Pokemon:", error));
+                    pokemonList.appendChild(pokemonListItem);
+                });
+            }
+            fetchPokemon();
+
+            // fetch("https://pokeapi.co/api/v2/pokemon?limit=10")
+            //     .then((response) => response.json())
+            //     .then((data) => {
+            //         const pokemonList = document.getElementById("pokemon-list");
+            //         data.results.forEach((pokemon) => {
+            //             const pokemonListItem = document.createElement("li");
+            //             pokemonListItem.innerText = pokemon.name;
+
+            //             pokemonListItem.addEventListener("click", () => {
+            //                 fetch(`/ addFavourite / ${pokemon.name}`)
+            //                     .then(data => {
+            //                         if (data.ok) {
+            //                             alert(`${pokemon.name} added to favourites.`);
+            //                             fetchFavourites();
+            //                             fetchTimeline();
+            //                         } else {
+            //                             alert(`Failed to add ${pokemon.name} to favourites.`);
+            //                         }
+            //                     })
+            //                     .catch(error => console.error("Error adding favourite:", error));
+            //             });
+
+            //             pokemonList.appendChild(pokemonListItem);
+            //         });
+            //     })
+            //     .catch((error) => console.error("Error fetching Pokemon:", error));
         </script>
 
 
