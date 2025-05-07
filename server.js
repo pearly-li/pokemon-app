@@ -42,7 +42,7 @@ const favouritesModel = mongoose.model("favourites", favouritesSchema);
 
 const timelineModel = mongoose.model("timelineEvents", timelineSchema);
 
-const userModel = mongoose.model("userModel", userSchema);
+const userModel = mongoose.model("users", userSchema);
 
 /* app.METHOD(path, callback [, callback ...]) */
 app.listen(PORT, () => {
