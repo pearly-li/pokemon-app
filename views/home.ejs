@@ -50,6 +50,11 @@
                 clearListAndAppend("favourites-list", favourites, favouritePokemon => favouritePokemon.name);
             };
 
+            const fetchTimeline = async () => {
+                const timeline = await fetchData("/timeline");
+                clearListAndAppend("timeline-list", timelineEvents, timelineEvent => `${timelineItem.title}: ${timelineItem.description} — ${new Date(timelineItem.date).toLocaleString()}`
+                );
+            };
             // const fetchFavourites = () => {
             //     fetch(`/ favourites`, { method: "GET" })
             //         .then(response => response.json())
@@ -66,21 +71,21 @@
             // }
             fetchFavourites();
 
-            const fetchTimeline = () => {
-                fetch(`/ timeline`, { method: "GET" })
-                    .then(response => response.json())
-                    .then(timelineData => {
-                        const timelineList = document.getElementById("timeline-list");
-                        timelineList.innerHTML = ""; // Clear list before adding
-                        timelineData.forEach((timelineItem) => {
-                            const timelineListItem = document.createElement("li");
-                            timelineListItem.innerText = `${timelineItem.title}: ${timelineItem.description} — ${new Date(timelineItem.date).toLocaleString()}`;
+            // const fetchTimeline = () => {
+            //     fetch(`/ timeline`, { method: "GET" })
+            //         .then(response => response.json())
+            //         .then(timelineData => {
+            //             const timelineList = document.getElementById("timeline-list");
+            //             timelineList.innerHTML = ""; // Clear list before adding
+            //             timelineData.forEach((timelineItem) => {
+            //                 const timelineListItem = document.createElement("li");
+            //                 timelineListItem.innerText = `${timelineItem.title}: ${timelineItem.description} — ${new Date(timelineItem.date).toLocaleString()}`;
 
-                            timelineList.appendChild(timelineListItem);
-                        });
-                    })
-                    .catch((error) => console.error("Error fetching timeline:", error));
-            }
+            //                 timelineList.appendChild(timelineListItem);
+            //             });
+            //         })
+            //         .catch((error) => console.error("Error fetching timeline:", error));
+            // }
             fetchTimeline();
 
             fetch("https://pokeapi.co/api/v2/pokemon?limit=10")
