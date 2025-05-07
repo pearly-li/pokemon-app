@@ -59,15 +59,40 @@ app.get("/login", (req, res) => {
 });
 
 app.use(express.urlencoded({ extended: true }));
-app.post("/login", (req, res) => {
+
+const addToTimeline = async (title, description, date, username) => {
+    try {
+        const timelineEvent = await timelineModel.create({
+            title,
+            description,
+            date,
+            username,
+        });
+        return timelineEvent;
+    } catch (error) {
+        console.error("Database error", error);
+    }
+};
+
+app.post("/login", async (req, res) => {
     const { username, password } = req.body;
     const userFound = usersArray.find(
         (user) => user.username === username && user.password === password
     );
     if (userFound) {
         req.session.user = userFound;
+        try {
+            await addToTimeline(
+                "Login",
+                "User logged in",
+                new Date(),
+                req.session.user.username
+            );
+            console.log("Adding timeline event for:", username);
+        } catch (error) {
+            console.error("Failed to add to timeline", error);
+        }
         res.redirect("/home");
-        addToTimeline("Login", "User logged in", new Date(), user.username);
         // res.render("home.ejs", { username: req.session.user.username });
     } else {
         res.status(401).send("Invalid credentials");
@@ -100,24 +125,15 @@ app.get("/favourites", async (req, res) => {
 });
 
 app.get("/timeline", async (req, res) => {
-    const timelineFound = await timelineModel.find({
-        username: req.session.user.username,
-    });
-    res.json(timelineFound);
-});
-const addToTimeline = async (title, description, date, username) => {
     try {
-        const timelineEvent = await timelineModel.create({
-            title,
-            description,
-            date,
-            username,
+        const timelineFound = await timelineModel.find({
+            username: req.session.user.username,
         });
-        return timelineEvent;
+        res.json(timelineFound);
     } catch (error) {
-        console.error("Database error", error);
+        console.log("Database error", error);
     }
-};
+});
 
 // : is dynamic route parameter signifier in ExpressJS
 app.get("/addFavourite/:favourite", async (req, res) => {
@@ -131,14 +147,13 @@ app.get("/addFavourite/:favourite", async (req, res) => {
                 name: req.params.favourite,
                 username: req.session.user.username,
             });
-            res.status(200).json(favouritesAdd);
-            addToTimeline("Login", "User logged in", new Date(), user.username);
-            addToTimeline(
+            await addToTimeline(
                 "Added Favourite",
-                favourite,
+                req.params.favourite,
                 new Date(),
-                user.username
+                req.session.user.username
             );
+            res.status(200).json(favouritesAdd);
         } else {
             return res.status(409).json({ message: "Already in favourites" });
         }
