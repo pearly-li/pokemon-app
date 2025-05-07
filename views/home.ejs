@@ -20,8 +20,34 @@
         <ul id="timeline-list"></ul>
 
         <script>
+            const createListItem = (text) => {
+                const listItem = document.createElement("li");
+                listItem.innerText = text;
+                return listItem;
+            }
+
+            const clearListAndAppend = (elementId, items, formatter) => {
+                const unorderedList = document.getElementById(elementId);
+                unorderedList.innerHTML = "";
+                items.forEach(item => {
+                    unorderedList.appendChild(createListItem(formatter(item)));
+                });
+            }
+
+            const fetchData = async (path) => {
+                try {
+                    const fetchedData = await fetch(`/${path}`, { method: "GET" })
+                    if (!fetchedData.ok) {
+                        console.error(`Couldn't fetch data from ${url}, error: ${res.status}`)
+                    } else {
+                        return await fetchedData.json();
+                    }
+                } catch (err) { console.error(`Error fetching from ${path}:`, err) }
+            }
+
+
             const fetchFavourites = () => {
-                fetch(`/favourites`, { method: "GET" })
+                fetch(`/ favourites`, { method: "GET" })
                     .then(response => response.json())
                     .then(data => {
                         const favouritesList = document.getElementById("favourites-list");
@@ -37,7 +63,7 @@
             fetchFavourites();
 
             const fetchTimeline = () => {
-                fetch(`/timeline`, { method: "GET" })
+                fetch(`/ timeline`, { method: "GET" })
                     .then(response => response.json())
                     .then(timelineData => {
                         const timelineList = document.getElementById("timeline-list");
@@ -62,7 +88,7 @@
                         pokemonListItem.innerText = pokemon.name;
 
                         pokemonListItem.addEventListener("click", () => {
-                            fetch(`/addFavourite/${pokemon.name}`)
+                            fetch(`/ addFavourite / ${pokemon.name}`)
                                 .then(data => {
                                     if (data.ok) {
                                         alert(`${pokemon.name} added to favourites.`);
