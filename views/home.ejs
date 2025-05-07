@@ -67,6 +67,7 @@
                                     if (data.ok) {
                                         alert(`${pokemon.name} added to favourites.`);
                                         fetchFavourites();
+                                        fetchTimeline();
                                     } else {
                                         alert(`Failed to add ${pokemon.name} to favourites.`);
                                     }
